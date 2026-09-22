@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visita Cafayate</title>
+    <style>
+        /* --- PALETA DE COLORES --- */
+        :root {
+            --rojo-cerro: #A0311D;       
+            --verde-vid: #2D5A27;        
+            --naranja-erosion: #D36C22;  
+            --amarillo-piedra: #E8A83A;  
+            --violeta-estrato: #564E65;  
+            --celeste-cielo: #77B5D5;    
+            --dorado-sol: #D4AF37;       
+            --fondo-claro: #F9F6F0;      
+            --texto-oscuro: #2C2C2C;
+            --blanco: #FFFFFF;
+            --navbar-bg: rgba(20, 18, 24, 0.95); /* Tono muy oscuro para fundir con el logo */
+        }
+
+        /* --- RESET & BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--fondo-claro);
+            color: var(--texto-oscuro);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-weight: 700;
+        }
+
+        /* --- NAVEGACIÓN RESPONSIVE --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--navbar-bg);
+            padding: 10px 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-logo img {
+            height: 60px; /* Tamaño para la navbar */
+            width: auto;
+            display: block;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links li a {
+            color: var(--blanco);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links li a:hover {
+            color: var(--dorado-sol);
+        }
+
+        .menu-toggle {
+            display: none;
+            color: var(--blanco);
+            font-size: 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* --- HERO SECTION --- */
+        #hero {
+            position: relative;
+            height: 100vh;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: var(--violeta-estrato);
+            padding-top: 80px; /* Compensa la navbar fija */
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        .slide.active { opacity: 1; }
+
+        .slide::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(86, 78, 101, 0.5), rgba(160, 49, 29, 0.7));
+            z-index: 2;
+        }
+
+        /* Degradados de fondo para los slides */
+        .slide:nth-child(1) { background: linear-gradient(var(--celeste-cielo), var(--rojo-cerro)); }
+        .slide:nth-child(2) { background: linear-gradient(var(--celeste-cielo), var(--verde-vid)); }
+        .slide:nth-child(3) { background: linear-gradient(var(--dorado-sol), var(--naranja-erosion)); }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            max-width: 900px;
+            padding: 2rem;
+            color: var(--blanco);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Logo Responsive en el Hero */
+        .hero-logo {
+            width: 100%;
+            max-width: 500px; /* Tamaño máximo en pantallas grandes */
+            height: auto;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.6));
+        }
+
+        .hero-content p {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            font-weight: 400;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+        }
+
+        /* --- SECCIÓN PUBLICACIONES (CARDS) --- */
+        #publicaciones {
+            padding: 6rem 2rem 5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        #publicaciones h2 {
+            text-align: center;
+            color: var(--rojo-cerro);
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--blanco);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border-bottom: 5px solid var(--naranja-erosion);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-bottom-color: var(--dorado-sol);
+        }
+
+        .card-cover {
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blanco);
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, var(--rojo-cerro), var(--naranja-erosion));
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .card-body h3 {
+            color: var(--verde-vid);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .card-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--celeste-cielo);
+            color: var(--texto-oscuro);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .card:hover .card-btn { background-color: var(--amarillo-piedra); }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(44, 44, 44, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal-content {
+            background: var(--fondo-claro);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            border-top: 8px solid var(--rojo-cerro);
+        }
+
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 2rem;
+            color: var(--violeta-estrato);
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .modal-content h3 { color: var(--verde-vid); margin-bottom: 1.5rem; font-size: 1.8rem; }
+
+        .modal-actions a {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--rojo-cerro);
+            color: var(--blanco);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+
+        .modal-actions a:hover { background-color: var(--naranja-erosion); }
+
+        /* --- SECCIÓN ENLACES --- */
+        #enlaces {
+            background-color: var(--verde-vid);
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--blanco);
+        }
+
+        #enlaces h2 { margin-bottom: 2.5rem; font-size: 2.2rem; color: var(--dorado-sol); }
+
+        .links-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .link-btn {
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .link-btn.primary {
+            background-color: var(--rojo-cerro);
+            color: var(--blanco);
+            box-shadow: 0 5px 15px rgba(160, 49, 29, 0.4);
+            border: 2px solid var(--rojo-cerro);
+        }
+
+        .link-btn.primary:hover {
+            transform: scale(1.05);
+            background-color: var(--naranja-erosion);
+            border-color: var(--naranja-erosion);
+        }
+
+        .link-btn.secondary {
+            background-color: transparent;
+            color: var(--blanco);
+            border: 2px solid var(--celeste-cielo);
+        }
+
+        .link-btn.secondary:hover {
+            background-color: var(--celeste-cielo);
+            color: var(--texto-oscuro);
+        }
+
+        /* --- SECCIÓN CONTACTO --- */
+        #contacto {
+            padding: 5rem 2rem;
+            background-color: var(--fondo-claro);
+        }
+
+        #contacto h2 { text-align: center; color: var(--rojo-cerro); margin-bottom: 2rem; font-size: 2.2rem; }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--blanco);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--amarillo-piedra);
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--violeta-estrato); font-weight: 600; }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: #fafafa;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--celeste-cielo);
+            box-shadow: 0 0 5px rgba(119, 181, 213, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--verde-vid);
+            color: var(--blanco);
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover { background-color: var(--rojo-cerro); }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--navbar-bg); /* Mismo fondo oscuro para mezclar el logo */
+            color: var(--blanco);
+            text-align: center;
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .footer-logo {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        footer p { opacity: 0.8; font-size: 0.9rem; }
+
+        /* --- MEDIA QUERIES (RESPONSIVENESS COMPLETA) --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: var(--navbar-bg);
+                flex-direction: column;
+                gap: 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+                text-align: center;
+            }
+
+            .nav-links.active { max-height: 300px; }
+            .nav-links li { border-top: 1px solid rgba(255,255,255,0.1); }
+            .nav-links li a { display: block; padding: 15px 0; }
+            .menu-toggle { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA DE NAVEGACIÓN -->
+    <nav class="navbar">
+        <a href="#hero" class="nav-logo">
+            <img src="./assets/img/visita-cafa.png" alt="Logo Visita Cafayate">
+        </a>
+        <button class="menu-toggle" id="mobile-menu-btn">☰</button>
+        <ul class="nav-links" id="nav-links-menu">
+            <li><a href="#hero">Inicio</a></li>
+            <li><a href="#publicaciones">Publicaciones</a></li>
+            <li><a href="#enlaces">Sitios de Interés</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="hero">
+        <div class="slide active"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+        
+        <div class="hero-content">
+            <!-- Logo principal reemplazando el texto del título -->
+            <img src="./assets/img/visita-cafa.png" alt="Visita Cafayate" class="hero-logo">
+            <p>Publicaciones y revistas digitales de divulgación turística, geológica, gastronómica y enológica sobre Cafayate.</p>
+        </div>
+    </section>
+
+    <!-- PUBLICACIONES SECTION -->
+    <section id="publicaciones">
+        <h2>Nuestras Publicaciones</h2>
+        <div class="grid-cards" id="cards-container">
+            <!-- Las cards se inyectan vía JS -->
+        </div>
+    </section>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="docModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <h3 id="modalTitle">Título del Documento</h3>
+            <p style="margin-bottom: 20px; color: var(--texto-oscuro);">Selecciona una opción para continuar:</p>
+            <div class="modal-actions">
+                <a href="#" id="modalReadLink" target="_blank">Leer / Descargar PDF</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ENLACES INSTITUCIONALES -->
+    <section id="enlaces">
+        <h2>Sitios de Interés</h2>
+        <div class="links-container">
+            <a href="https://atcafayate.tur.ar/" target="_blank" class="link-btn primary">Asociación de Turismo (ATC)</a>
+            <a href="https://www.cafayate.tur.ar/" target="_blank" class="link-btn secondary">Portal Cafayate Tur</a>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto">
+        <h2>Contacto</h2>
+        <div class="form-container">
+            <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Mensaje enviado (simulación)');">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo</label>
+                    <input type="text" id="nombre" required placeholder="Tu nombre">
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" required placeholder="tu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="mensaje">Mensaje</label>
+                    <textarea id="mensaje" rows="4" required placeholder="¿En qué podemos ayudarte?"></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Enviar Mensaje</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <img src="./assets/img/visita-cafa.png" alt="Logo Visita Cafayate Footer" class="footer-logo">
+        <p>&copy; 2026 Visita Cafayate. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        // 1. Menú Móvil (Hamburguesa)
+const menuBtn = document.getElementById('mobile-menu-btn');
+const navLinks = document.getElementById('nav-links-menu');
+const navItems = document.querySelectorAll('.nav-links li a');
+
+menuBtn.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+});
+
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+    });
+});
+
+// 2. Lógica del Slider Automático
+const slides = document.querySelectorAll('.slide');
+let currentSlide = 0;
+
+function nextSlide() {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add('active');
+}
+setInterval(nextSlide, 5000);
+
+// 3. Datos de los PDFs locales y sus portadas
+const publicaciones = [
+    { 
+        titulo: "Rutas Rojas (Geológica)", 
+        url: "./assets/pdf/Revista digital- Rutas Rojas.pdf", 
+        portada: "./assets/img/rutasrojas1.png"
+    },
+    { 
+        titulo: "Bodega Don Celedonio", 
+        url: "./assets/pdf/Revista Digital - Bodega Don Celedonio.pdf", 
+        portada: "./assets/img/cele.png" 
+    },
+    { 
+        titulo: "Serenata a Cafayate", 
+        url: "./assets/pdf/Serenata a Cafayate - Edición Especial.pdf", 
+        portada: "./assets/img/sere.png" 
+    },
+    { 
+        titulo: "Cafayate Tech-Vintage", 
+        url: "./assets/pdf/revista_digital_cafayate_tech.pdf", 
+        portada: "./assets/img/tech.png" 
+    },
+    { 
+        titulo: "Sabores de Cafayate", 
+        url: "./assets/pdf/sabores_de_cafayate.pdf", 
+        portada: "./assets/img/sabor.png" 
+    },
+    { 
+        titulo: "Quebrada de las Conchas", 
+        url: "./assets/pdf/Revista digital- Quebrada de las conchas.pdf", 
+        portada: "./assets/img/lacon.png" 
+    },
+    { 
+        titulo: "Corridas y pialadas", 
+        url: "./assets/pdf/Corridas y pialadas.pdf", 
+        portada: "./assets/img/corri.png" 
+    },
+    { 
+        titulo: "Rio Colorado", 
+        url: "./assets/pdf/Blanco y Claro.pdf", 
+        portada: "./assets/img/colo.png" 
+    },
+    { 
+        titulo: "Bodega Etchart", 
+        url: "./assets/pdf/Revista_Bodega_Etchart.pdf", 
+        portada: "./assets/img/echalo.png"
+    }
+];
+
+// 4. Generar Cards Dinámicamente con imágenes
+const container = document.getElementById('cards-container');
+
+publicaciones.forEach((pub, index) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+        <img src="${pub.portada}" alt="${pub.titulo}" style="width: 100%; height: 220px; object-fit: cover; display: block;">
+        <div class="card-body">
+            <h3>${pub.titulo}</h3>
+            <span class="card-btn">Ver Detalles</span>
+        </div>
+    `;
+    card.addEventListener('click', () => openModal(pub.titulo, pub.url));
+    container.appendChild(card);
+});
+
+// 5. Lógica del Modal
+const modal = document.getElementById('docModal');
+const closeBtn = document.getElementById('closeModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalReadLink = document.getElementById('modalReadLink');
+
+function openModal(titulo, url) {
+    modalTitle.textContent = titulo;
+    modalReadLink.href = url;
+    modal.classList.add('active');
+}
+
+function closeModal() {
+    modal.classList.remove('active');
+}
+
+closeBtn.addEventListener('click', closeModal);
+
+modal.addEventListener('click', (e) => {
+    if(e.target === modal) closeModal();
+});
+
+    </script>
+</body>
+</html>
